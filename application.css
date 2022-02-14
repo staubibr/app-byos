@@ -1,0 +1,106 @@
+html, 
+.byos, 
+.byos main, 
+.byos .map {
+	width: 100%;
+	height: 100%;    
+	padding: 0;
+    margin: 0;
+}
+
+html, 
+button, .ol-control button, 
+.ol-scale-line-inner {
+    font-family: sans-serif;
+    font-size: 11pt;
+	color: black;
+}
+
+a, a:visited {
+	color: black;
+}
+
+button, a, a:visited, .ol-viewport {
+    cursor: pointer;
+}
+
+.ol-scale-line,
+body.byos button,
+.simulator-inner {
+	background-color: rgb(248, 248, 248);
+}
+
+.ol-scale-line:hover,
+body.byos button:hover, body.byos button:focus {
+	background-color: rgb(248, 248, 248, 0.9);
+}
+
+.ol-popup-content {
+    width: 180px;
+}
+
+.ol-popup .ol-popup-content ul {
+    padding: 0;
+}
+
+.ol-popup .ol-popup-content {
+	margin: 2px;
+}
+
+.ol-popup .ol-popup-content hr {
+	border: none;
+    border-bottom: solid thin silver;
+}
+
+.ol-popup .ol-popup-content ul {
+    margin: 0px;
+    list-style: none;
+}
+
+.ol-popup .ol-popup-content .title {
+	font-size: 1.1em;
+    margin-bottom: 4px;
+    font-weight:bold;
+}
+
+.overmap {
+    position: absolute;
+    border-radius: 4px;
+    border: none;
+}
+
+.ol-control.simulator {
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 400px;
+}
+
+.simulator-inner,
+.simulator-inner > * {
+	padding:4px;
+}
+
+.ol-control .simulator-inner button {    
+	display: inline-block;
+	width: 300px;
+    height: 28px;
+    border-radius: 4px 4px 0px 0px;
+    border-bottom: solid 2px rgba(150, 150, 150, 1);
+    background: rgba(235, 235, 235, 1);
+	margin-top: 10px;
+}
+
+.ol-control .simulator-inner button:hover,
+.ol-control .simulator-inner button:focus {
+    background: rgba(220, 220, 220, 0.9);
+}
+
+.ol-control .simulator-inner > * {
+	text-align: center;
+}
+
+.ol-control .simulator-inner .busy > * {
+	display: inline-block;
+	vertical-align: middle;
+}

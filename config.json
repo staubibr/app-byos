@@ -1,0 +1,42 @@
+{
+    "csd": {
+        "id": "csd",
+        "key": "UID",
+        "url": "./data/csd.geojson",
+        "type": "polygon",
+        "z": 0,
+        "style": {
+            "fill": {
+                "type": "static",
+                "color": "rgba(200,200,200,0.7)"
+            },
+            "stroke": {
+                "type": "static",
+                "width": 1,
+                "color": "rgba(0,0,0,1)"
+            }
+        }
+    },
+    "hospitals": {
+        "id": "hospitals",
+        "key": "index",
+        "url": "./data/hospitals.geojson",
+        "type": "point",
+        "z": 1,
+        "style": {
+            "src": "./assets/hospital.png"
+        }
+    },
+    "highlight": {
+        "id": "highlight",
+        "fill": {
+            "type": "static",
+            "color": "rgba(0,200,200,0.6)"
+        },
+        "stroke": {
+            "type": "static",
+            "width": 1,
+            "color": "rgba(255,255,255,1)"
+        }
+    }
+}

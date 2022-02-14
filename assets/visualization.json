@@ -1,0 +1,182 @@
+{
+    "playback": {
+        "speed": 15,
+        "loop": true,
+        "cache": 10
+    },
+    "gis": {
+        "basemap": "openstreetmap",
+        "view": {
+            "center": [-75.88, 45.37],
+            "zoom": 10
+        },
+        "layers": [{
+                "id": "EmergencyAreas",
+                "type": "polygon",
+                "file": "emergency_areas.geojson",
+				"fields":["id", "population"],
+                "label": "Emergency Area",
+                "style": "emergency_areas",
+                "join": "id"
+            }, {
+                "id": "Network",
+                "type": "linestring",
+                "file": "network.geojson",
+                "label": "Road Network",
+                "style": "network",
+                "join": null
+            }, {
+                "id": "SimulationArea",
+                "type": "polygon",
+                "file": "simulation_area.geojson",
+                "label": "Simulation Area",
+                "style": "simulation_area",
+                "join": null
+            }, {
+                "id": "Hospitals",
+                "type": "point",
+                "file": "hospitals.geojson",
+				"fields":["id", "name", "capacity", "rate"],
+                "label": "Hospital",
+                "style": "hospital",
+				"join": "id"
+            }
+        ],
+        "styles": [{
+                "id": "emergency_areas",
+                "fill": {
+                    "type": "static",
+                    "color": "rgba(200,200,200,0.7)"
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+					"color": "rgba(0,0,0,1)"
+                }
+            }, {
+                "id": "hospital",
+                "src": "../api-web-devs/components/style/icons/hospital.png"
+            }, {
+                "id": "simulation_area",
+                "fill": {
+                    "type": "static",
+                    "color": "rgba(255,255,255,0)"
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 2,
+                    "color": "rgb(200,30,75)"
+                }
+            }, {
+                "id": "network",
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+                    "color": "rgba(60,60,60,1)"
+                }
+            }, {
+                "id": "highlight",
+				"radius": 6,
+                "fill": {
+                    "type": "static",
+                    "color": "rgba(0,200,200,0.6)"
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+                    "color": "rgba(255,255,255,1)"
+                }
+            }
+        ],
+        "variables": [{
+                "name": "Dead",
+                "layer": "EmergencyAreas",
+                "fill": {
+                    "type": "quantile",
+                    "property": "dead",
+					"zero": "rgba(255,255,255,0.8)",
+                    "colors": ["rgba(254,229,217,0.8)", "rgba(252,187,161,0.8)", "rgba(252,146,114,0.8)", "rgba(251,106,74,0.8)", "rgba(222,45,38,0.8)", "rgba(165,15,21,0.8)"]
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+                    "color": "rgba(0,0,0,1)"
+                }
+            }, {
+                "name": "Active (fill) & Total (size)",
+                "layer": "Hospitals",
+                "radius": {
+                    "type": "quantile",
+                    "property": "total",
+                    "min": 6,
+                    "max": 36,
+                    "classes": 6
+                },
+                "fill": {
+                    "type": "quantile",
+                    "property": "active",
+					"zero": "rgba(255,255,255,0.8)",
+                    "colors": ["rgba(239,243,255,0.8)", "rgba(198,219,239,0.8)", "rgba(158,202,225,0.8)", "rgba(107,174,214,0.8)", "rgba(49,130,189,0.8)", "rgba(8,81,156,0.8)"]
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+                    "color": "rgba(0,0,0,1)"
+                }
+            }, {
+                "name": "Released (fill) & Total (size)",
+                "layer": "Hospitals",
+                "radius": {
+                    "type": "quantile",
+                    "property": "total",
+                    "min": 6,
+                    "max": 36,
+                    "classes": 6
+                },
+                "fill": {
+                    "type": "quantile",
+                    "property": "released",
+					"zero": "rgba(255,255,255,0.8)",
+                    "colors": ["rgba(237,248,233,0.8)", "rgba(199,233,192,0.8)", "rgba(161,217,155,0.8)", "rgba(116,196,118,0.8)", "rgba(49,163,84,0.8)", "rgba(0,109,44,0.8)"]
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+                    "color": "rgba(0,0,0,1)"
+                }
+            }, {
+                "name": "Rejected (fill) & Total (size)",
+                "layer": "Hospitals",
+                "radius": {
+                    "type": "quantile",
+                    "property": "total",
+                    "min": 6,
+                    "max": 36,
+                    "classes": 6
+                },
+                "fill": {
+                    "type": "quantile",
+                    "property": "rejected",
+					"zero": "rgba(255,255,255,0.8)",
+                    "colors": ["rgba(242,240,247,0.8)", "rgba(218,218,235,0.8)", "rgba(188,189,220,0.8)", "rgba(158,154,200,0.8)", "rgba(117,107,177,0.8)", "rgba(84,39,143,0.8)"]
+                },
+                "stroke": {
+                    "type": "static",
+                    "width": 1,
+                    "color": "rgba(0,0,0,1)"
+                }
+            }, {
+                "name": "Active (icon scale)",
+                "layer": "Hospitals",
+                "scale": {
+                    "type": "quantile",
+                    "property": "active",
+                    "min": 0.4,
+                    "max": 1.1,
+                    "classes": 6
+                },
+                "src": "../api-web-devs/components/style/icons/hospital.png"
+            }
+        ]
+    }
+}
