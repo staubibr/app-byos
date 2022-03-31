@@ -4,95 +4,134 @@ import Core from '../app-framework/tools/core.js';
 import Dom from '../app-framework/tools/dom.js';
 import Net from '../app-framework/tools/net.js';
 import Style from '../app-framework/tools/style.js'
-import Templated from '../app-framework/components/templated.js';
-import Content from '../app-framework/widgets/gis/popup.js';
+import Application from '../app-framework/base/application.js';
+import Content from '../app-framework/widgets/gis/popup-content.js';
 import Simulator from './simulator.js';
 
 import Map from '../app-framework/components/ol/map.js'
 
-export default Core.Templatable("Application", class Application extends Templated { 
+export default class AppByos extends Application { 
+
+	get hospitals() { return this.simulator.params.hospitals; }
+	get csd() { return this.simulator.params.csd; }
 
 	constructor(node) {		
 		super(node);
 		
-		this.simulator = this.Widget("simulator");
-		this.map = new Map(this.Elem("map"), [Map.BasemapOSM(true)]);
+		this.simulator = this.elems.simulator;
+		this.map = new Map(this.elems.map, [Map.basemap_osm(true)]);
 		
-		this.map.SetView([-75.7, 45.3], 10);
+		this.map.set_view([-75.7, 45.3], 10);
 		
 		this.popup_content = new Content(this.map.popup.content, { 
-			get_title: f => `CSD: ${f.getProperties()["UID"]}`,
-			get_content: f => {		
-				return `<ul>` +
-						  `<li>Name: ${f.getProperties()["Name"]}</li>` +
-						  `<li>Province: ${f.getProperties()["Province"]}</li>` +
-					   `</ul>`;				
+			get_title: f => {
+				if (f.layer == "csd") return `CSD: ${f.feature.getProperties()["UID"]}`;
+				
+				if (f.layer == "hospitals") return `Hospital: ${f.feature.getProperties()["index"]}`;
+			},
+			get_content: f => {
+				if (f.layer == "csd") return this.get_content_csd(f.feature);
+				
+				if (f.layer == "hospitals") return this.get_content_hospital(f.feature);
 			}
 		});
 				
 		this.init();
 	}
 	
+	get_content_csd(f) {
+		var p = f.getProperties();
+		var ul = Dom.create('ul');
+		var id = f.getProperties()["UID"];
+		
+		Dom.create('li', { innerHTML:`<span>Name: ${p["Name"]}</span>` }, ul);
+		Dom.create('li', { innerHTML:`<span>Province: ${p["Province"]}</span>` }, ul);
+				
+		return ul;
+	}
+	
+	get_content_hospital(f) {
+		var p = f.getProperties();
+		var ul = Dom.create('ul');
+		var id = f.getProperties()["index"];
+		
+		var li_1 = Dom.create('li', { innerHTML:`<span>Name: ${p["facility_name"]}</span>` }, ul);
+		var li_2 = Dom.create('li', { innerHTML:`<span>Capacity: </span>` }, ul);
+		var li_3 = Dom.create('li', { innerHTML:`<span>Rate: </span>` }, ul);
+		var li_4 = Dom.create('li', { innerHTML:`<span>Type: ${p["source_facility_type"]}</span>` }, ul);
+		
+		var v_capacity = this.hospitals[id] && this.hospitals[id].capacity || p["capacity"];
+		var v_rate = this.hospitals[id] && this.hospitals[id].rate || p["rate"];
+		
+		var capacity = Dom.create("input", { type:"number", value:v_capacity }, li_2);
+		var rate = Dom.create("input", { type:"number", value:v_rate }, li_3);
+		
+		var handler = (ev) => this.hospitals[id] = { capacity: capacity.value, rate: rate.value }
+		
+		capacity.addEventListener("change", handler);
+		rate.addEventListener("change", handler);
+		
+		return ul;
+	}
+	
 	async init() {
-		this.config = await Net.JSON("./config.json");
+		this.config = await Net.json("./config.json");
 		
-		this.simulator.selected = {};
-		this.simulator.visualization = await Net.File("./assets/visualization.json");
+		this.simulator.visualization = await Net.file("./assets/visualization.json");
 		
-		this.styles = {
-			csd: Style.FromJson("polygon", this.config.csd.style).Symbol(),
-			hospitals: Style.FromJson("point", this.config.hospitals.style).Symbol(),
-			highlight: Style.FromJson("polygon", this.config.highlight).Symbol()
-		}
+		this.config.csd.style = Style.from_json("polygon", this.config.csd.style).symbol();
+		this.config.csd.highlight = Style.from_json("polygon", this.config.csd.highlight).symbol();
+		this.config.hospitals.style = Style.from_json("point", this.config.hospitals.style).symbol();
+		this.config.hospitals.highlight = Style.from_json("point", this.config.hospitals.highlight).symbol();
 		
 		this.map_data = await Promise.all([
-			Net.JSON(this.config.csd.url), 
-			Net.JSON(this.config.hospitals.url)
+			Net.json(this.config.csd.url), 
+			Net.json(this.config.hospitals.url)
 		])
 		
-		this.load_layer(this.config.csd, this.map_data[0], this.styles.csd);
-		this.load_layer(this.config.hospitals, this.map_data[1], this.styles.hospitals);
+		this.load_layer(this.config.csd, this.map_data[0], this.config.csd.style);
+		this.load_layer(this.config.hospitals, this.map_data[1], this.config.hospitals.style);
 				
-		this.map.On("click", this.OnMap_Click.bind(this));
+		this.map.on("click", this.on_map_click.bind(this));
 	}
 	
 	async load_layer(cfg, data, style) {		
-		var layer = this.map.AddGeoJsonLayer(cfg.id, data);
+		var layer = this.map.add_geojson_layer(cfg.id, data);
 		
 		layer.setZIndex(cfg.z);
 		layer.setStyle(style);
 	}
 	
-	OnMap_Click(ev) {
-		this.map.ShowPopup(null);
+	on_map_click(ev) {
+		this.map.show_popup(null);
 		
-		var features = ev.features.filter(f => f.layer == "csd").map(f => f.feature);
-		
-		features.forEach(f => {
-			var id = f.getProperties()[this.config.csd.key];
-			
-			if (this.simulator.selected[id]) {
-				f.setStyle(this.styles.csd);
+		ev.features.forEach(f => {
+			var l = this.config[f.layer];
+			var id = f.feature.getProperties()[l.key];
+
+			if (f.layer != "csd") return;
+
+			if (this.csd[id]) {
+				f.feature.setStyle(this.config[f.layer].style);
 				
-				delete this.simulator.selected[id];
+				delete this.csd[id];
 			}
-			
 			else {
-				this.simulator.selected[id] = f;
+				this.csd[id] = f.feature;
 				
-				f.setStyle(this.styles.highlight);
+				f.feature.setStyle(this.config[f.layer].highlight);
 			}
 		});
 		
-		this.popup_content.fill(features);
+		this.popup_content.fill(ev.features);
 				
 		this.map.popup.setPosition(ev.coordinates);
 	}
 		
-	Template() {
+	html() {
 		return	"<main handle='main' class='map-container'>" +
 					"<div handle='map' class='map'></div>" +
-					"<div handle='simulator' class='overmap simulator ol-control' widget='App.Widgets.Simulator'></div>" +
+					"<div handle='simulator' widget='App.Widget.Simulator'></div>" +
 				"</main>";
 	}
-});
+}

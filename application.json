@@ -1,0 +1,6 @@
+{
+	"URLs": {
+		"simulate": "http://localhost:8080/api/complete/execute",
+		"viewer": "http://localhost:81/app-embed/index.html?uuid="
+	}
+}

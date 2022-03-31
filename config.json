@@ -15,7 +15,19 @@
                 "width": 1,
                 "color": "rgba(0,0,0,1)"
             }
-        }
+        },
+        "highlight": {
+			"fill": {
+				"type": "static",
+				"color": "rgba(0,200,200,0.6)"
+			},
+			"stroke": {
+				"type": "static",
+				"width": 1,
+				"color": "rgba(255,255,255,1)"
+			}
+        },
+		"title": "UID"
     },
     "hospitals": {
         "id": "hospitals",
@@ -24,8 +36,12 @@
         "type": "point",
         "z": 1,
         "style": {
-            "src": "./assets/hospital.png"
-        }
+            "src": "./assets/hospital_1.png"
+        },
+        "highlight": {
+            "src": "./assets/hospital_2.png"
+        },
+		"title": "index"
     },
     "highlight": {
         "id": "highlight",

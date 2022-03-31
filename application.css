@@ -26,7 +26,7 @@ button, a, a:visited, .ol-viewport {
 
 .ol-scale-line,
 body.byos button,
-.simulator-inner {
+.ol-control.simulator-inner {
 	background-color: rgb(248, 248, 248);
 }
 
@@ -69,19 +69,19 @@ body.byos button:hover, body.byos button:focus {
     border: none;
 }
 
-.ol-control.simulator {
+.ol-control.simulator-inner {
     bottom: 10px;
     left: 50%;
     transform: translate(-50%, 0%);
     width: 400px;
 }
 
-.simulator-inner,
-.simulator-inner > * {
+.ol-control.simulator-inner,
+.ol-control.simulator-inner > * {
 	padding:4px;
 }
 
-.ol-control .simulator-inner button {    
+.ol-control.simulator-inner button {    
 	display: inline-block;
 	width: 300px;
     height: 28px;
@@ -91,16 +91,51 @@ body.byos button:hover, body.byos button:focus {
 	margin-top: 10px;
 }
 
-.ol-control .simulator-inner button:hover,
-.ol-control .simulator-inner button:focus {
+.ol-control.simulator-inner button:hover,
+.ol-control.simulator-inner button:focus {
     background: rgba(220, 220, 220, 0.9);
 }
 
-.ol-control .simulator-inner > * {
+.ol-control.simulator-inner > * {
 	text-align: center;
 }
 
-.ol-control .simulator-inner .busy > * {
+.ol-control.simulator-inner .busy > * {
 	display: inline-block;
 	vertical-align: middle;
+}
+
+.ol-popup .ol-popup-content {
+	overflow: initial;
+}
+
+.popup-content .button-container {
+    position: relative;
+    right: -20px;
+    text-align: right;
+    margin-top: 8px;
+}
+
+.popup-content .button-container button,
+.popup-content .button-container button:focus {
+    border: 0;
+    background-color: rgba(0,60,136,.5);
+    color: white;
+    font-weight: bold;
+}
+
+.popup-content .button-container button:hover {
+    background-color: rgba(0,60,136,.7);
+}
+
+.popup-content .button-container button.next {
+    margin-right: 8px;
+}
+
+.popup-content input {
+    width: 75px;
+}
+
+.popup-content li {
+	margin: 4px 0px;
 }
