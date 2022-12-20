@@ -55,7 +55,7 @@
                 }
             }, {
                 "id": "hospital",
-                "src": "../api-web-devs/components/style/icons/hospital.png"
+                "src": "../app-framework/components/style/icons/hospital.png"
             }, {
                 "id": "simulation_area",
                 "fill": {
@@ -175,7 +175,7 @@
                     "max": 1.1,
                     "classes": 6
                 },
-                "src": "../api-web-devs/components/style/icons/hospital.png"
+                "src": "../app-framework/components/style/icons/hospital.png"
             }
         ]
     }
